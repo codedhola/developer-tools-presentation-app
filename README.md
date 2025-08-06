@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Application Developer Tools – Code Snippets
 
-## Getting Started
+## 1. Application Tab (LocalStorage / SessionStorage / Cookies)
 
-First, run the development server:
+```js
+// Save user data in localStorage
+localStorage.setItem("user", JSON.stringify({ name: "Hola", role: "admin" }));
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+// Retrieve it later
+const user = JSON.parse(localStorage.getItem("user"));
+console.log(user.name); // "Hola"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 2. Storage (IndexedDB)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```js
+// Create a database and store data
+const request = indexedDB.open("MyDB", 1);
 
-## Learn More
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  db.createObjectStore("notes", { keyPath: "id" });
+};
 
-To learn more about Next.js, take a look at the following resources:
+request.onsuccess = () => {
+  const db = request.result;
+  const tx = db.transaction("notes", "readwrite");
+  tx.objectStore("notes").add({ id: 1, text: "Learn Dev Tools" });
+};
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 3. Background Services (Service Worker)
 
-## Deploy on Vercel
+### service-worker.js
+```js
+self.addEventListener("install", () => {
+  console.log("Service Worker installed");
+});
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
+});
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### main.js
+```js
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
+```
+
+---
+
+## 4. Sources Tab (Debugging with Breakpoints)
+
+```js
+function fetchUser() {
+  const user = { name: "Hola", age: 30 };
+  debugger; // <-- DevTools will pause here
+  console.log(user);
+}
+fetchUser();
+```
+
+---
+
+## 5. Debugging HTML Pages (Elements Tab)
+
+```html
+<!-- Inspect this in DevTools -->
+<div id="profile">
+  <h1>Hello, Hola!</h1>
+</div>
+```
+
+```js
+const profile = document.getElementById("profile");
+console.log(profile.innerHTML); // "Hello, Hola!"
+```
+
+---
+
+## 6. CSS Debugging (Styles + Layout Tabs)
+
+```html
+<style>
+  .box {
+    width: 100px;
+    height: 100px;
+    background: red;
+    margin: auto;
+  }
+</style>
+
+<div class="box"></div>
+```
+
+Open DevTools → Inspect Element → Modify box styles live.
+
+---
