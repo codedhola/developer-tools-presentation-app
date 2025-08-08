@@ -10,8 +10,18 @@ import { ExtensionStorageDemo } from "@/components/extension-storage-demo"
 import { ExperimentalAPIsDemo } from "@/components/experimental-apis-demo"
 import { Database, HardDrive, Cookie, Archive, Puzzle, FlaskRoundIcon as Flask } from "lucide-react"
 import { Toaster } from 'react-hot-toast';
+import { useEffect } from "react"
 
 export default function StorageDevToolsApp() {
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        console.log('Service Worker registered');
+      });
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6">
